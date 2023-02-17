@@ -1,5 +1,4 @@
 class Map
-  attr_accessor :index
   
   def initialize
     @map = Array.new {Array.new(2)}
