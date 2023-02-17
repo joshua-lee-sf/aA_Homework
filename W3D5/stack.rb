@@ -5,14 +5,32 @@ class Stack
 
 	def push(el)
 		@stack << el
+		self
+	end
+
+	def[](pos)
+		@stack[pos]
 	end
 
 	def pop
-		popped = @stack.pop
+		@stack.pop
 	end
 
 	def peek
-		@stack[-1]
+		self[-1]
 	end
 
+	private
+	attr_reader :store
+
+end
+
+if $PROGRAM_NAME == __FILE__
+	stack = Stack.new
+	p stack.push(4)
+	p stack.push(5)
+	p stack.push(10)
+	p stack.pop
+	p stack.peek
+	p stack
 end
