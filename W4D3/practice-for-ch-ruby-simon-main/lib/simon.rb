@@ -13,10 +13,8 @@ class Simon
     until @game_over == true
       self.take_turn
     end
-    if @game_over == true
-      self.game_over_message
-      self.reset_game
-    end
+    self.game_over_message
+    self.reset_game
   end
 
   def take_turn
@@ -30,17 +28,27 @@ class Simon
 
   def show_sequence
     self.add_random_color
+    @seq.each do |color|
+      puts color
+      sleep 0.75
+      system "clear"
+      sleep 0.25
+    end
   end
 
   def require_sequence
+    puts "Please input sequence by adding the first letter of each color you saw"
+    @seq.each do |color|
+      user_input = gets.chomp
+      if color[0] != user_input
+        @game_over = true
+        break
+      end
+    end
   end
 
   def add_random_color
-    colors = ["red", "blue", "yellow", "green"]
-    self.seq << colors.sample
-    if self.seq.length > 1
-      self.sequence_length += 1
-    end
+    self.seq << COLORS.shuffle.sample
   end
 
   def round_success_message
@@ -48,6 +56,7 @@ class Simon
   end
 
   def game_over_message
+    puts "Nice try! You went #{@sequence_length - 1} rounds!"
   end
 
   def reset_game
@@ -55,4 +64,9 @@ class Simon
     @game_over = false
     @seq = []
   end
+end
+
+if $PROGRAM_NAME == __FILE__
+  simon = Simon.new
+  simon.play
 end
