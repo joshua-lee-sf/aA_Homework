@@ -18,26 +18,35 @@ def sluggish_octopus(array)
   counter
 end
 
-def dominant_octopus(array)
-  element_length = array.map(&:length).sort
-  target = element_length.max
-
-  index = bsearch(element_length, target)
-  array[index]
+def dominant_octopus(fishes)
+  prc = Proc.new {|x, y| x.length <=> y.length}
+  fishes.merge_sort(&prc)[-1]
 end
 
-def bsearch(array, target)
-  array = array.sort
-  return nil if array.length == 0
-  midpoint = array.length / 2
-  case array[midpoint] <=> target
-  when 0
-    midpoint
-  when 1
-    bsearch(array.take(midpoint), target)
-  else
-    idx = bsearch(array.drop(midpoint + 1), target)
-    idx.nil? ? nil : idx + midpoint + 1
+class Array
+  def merge_sort(&prc)
+    prc ||= Proc.new {|x,y| x <=> y}
+    return self if self.length <= 1
+    midpoint = length / 2
+    left = self.take(midpoint).merge_sort(&prc)
+    right = self.drop(midpoint).merge_sort(&prc)
+    Array.merge(left, right, & prc)
+  end
+
+  private
+  def self.merge(left, right, & prc)
+    combined = []
+    until left.empty? || right.empty?
+      case prc.call(left.first, right.first)
+      when -1
+        combined << left.shift
+      when 0
+        combined << left.shift
+      when 1
+        combined << right.shift
+      end
+    end 
+    combined + left + right
   end
 end
 
@@ -51,7 +60,7 @@ def clever_octopus(array)
 end
 
 # p sluggish_octopus(fish)
-# p dominant_octopus(fish)
+p dominant_octopus(fish)
 # p dominant_octopus(fish)
 
 
@@ -72,5 +81,20 @@ end
 
 # p slow_dance("up", tiles_array)
 # p slow_dance("right-down", tiles_array)
-p fast_dance("up", tiles_hash)
-p fast_dance("right-down", tiles_hash)
+# p fast_dance("up", tiles_hash)
+# p fast_dance("right-down", tiles_hash)
+
+# def bsearch(array, target)
+#   array = array.sort
+#   return nil if array.length == 0
+#   midpoint = array.length / 2
+#   case array[midpoint] <=> target
+#   when 0
+#     midpoint
+#   when 1
+#     bsearch(array.take(midpoint), target)
+#   else
+#     idx = bsearch(array.drop(midpoint + 1), target)
+#     idx.nil? ? nil : idx + midpoint + 1
+#   end
+# end
