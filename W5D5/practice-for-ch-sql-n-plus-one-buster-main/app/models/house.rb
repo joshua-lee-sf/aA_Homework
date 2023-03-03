@@ -30,5 +30,6 @@ class House < ApplicationRecord
 
   def better_seeds_query
     # Your code here
+    
   end
 end
